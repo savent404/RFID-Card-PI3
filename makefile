@@ -1,6 +1,6 @@
 obj := obj/Login_System
 denpend := src/main.c
-FLAG := -Iinc
+FLAG := -Iinc -g
 
 all:
 	gcc -o $(obj) $(FLAG) $(denpend) -lpthread

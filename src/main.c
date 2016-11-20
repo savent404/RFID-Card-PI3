@@ -1,5 +1,62 @@
 #include <main.h>
 
+static struct config config_info = {.input_path = DEFAULT_INPUT_PATH,.output_path = ""};
+int main(int argc, char *argv[]) {
+    int res = -1;
+    pthread_t thread_input, thread_output;
+    
+    
+    if (argc != 1) {
+        for (int i = 1; i < argc; i++) {
+            /* Para: help */
+            if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
+                fprintf(stdout, "There is no help, help yourself\n");
+                return 0;
+            }
+            /* Para: -config */
+            if (!strcmp(argv[i], "-config")) {
+                i += 1;
+                if (argc <= i) {
+                    /* use default path:"./config" */
+                    if (usr_config(&config_info, DEFAULT_CONFIG_PATH))
+                        return -1;
+                }
+                else {
+                    if (usr_config(&config_info, argv[i]))
+                        return -1;
+                }
+            }
+        }
+    }
+
+    /* fifo access */
+    if (access(FIFO_NAME, F_OK) == -1) {
+        res = mkfifo(FIFO_NAME, 0720);
+        if (res != 0) {
+            fprintf(stderr, "FIFO create error : %d\n", res);
+            fprintf(stdout, "FIFO create error : %d\n", res);
+            exit(-1);
+        }
+    }
+
+    
+    //thread create 
+    res = pthread_create(&thread_input, NULL, usr_getc, NULL);
+    if (res < 0) {
+        fprintf(stderr, "Thread create error\n");
+        exit(-1);
+    }
+    res = pthread_create(&thread_output, NULL, usr_putc, NULL);
+    if (res < 0) {
+        fprintf(stderr, "Thread creat error\n");
+        exit(-1);
+    }
+    
+    while (1) {
+        sleep(1);
+    }
+    exit(0);
+}
 static void usr_login(void) {
     time_t T;
     char buf[100] = "##System Login:    ";
@@ -7,6 +64,42 @@ static void usr_login(void) {
     write(STDOUT_FILENO, buf, strlen(buf));
 }
 
+static int  usr_config(struct config *t, char *path) {
+    int fd = open(path, O_RDONLY);
+    if (fd < 0) {
+        fprintf(stderr, "Open config file Err:%d :%s\n", fd, path);
+        fprintf(stdout, "Open config file Err:%d :%s\n", fd, path);
+        return -1;
+    }
+
+    int cnt = 0, line_cnt = 0;
+    char buf[200];
+    char *pt = buf;
+    char line_buf[100];
+    char name[100], para[100];
+    cnt = read(fd, buf, 200);
+    while (cnt) {
+        while (cnt > 0&& pt[line_cnt] != '\n') {
+            line_cnt += 1;
+            cnt -= 1;
+        }
+        if (pt[line_cnt] == '\n') {
+            cnt -= 1;
+            line_cnt += 1;
+        }
+        sscanf(pt, "%s = %s", name, para);
+        if (!strcmp(name, DEVICE_PATH)) {
+            strcpy(t->input_path, para);
+        }
+        else if (!strcmp(name, OUTFILE_PATH)) {
+            strcpy(t->output_path, para);
+        }
+        pt += line_cnt;
+        line_cnt = 0;
+    }
+    close(fd);
+    return 0;
+}
 
 static int  info_get(struct info *pt) {
     time_t T;
@@ -29,14 +122,27 @@ static int  info_get(struct info *pt) {
 }
 
 static void *usr_putc(void* null) {
-    int in = open(FIFO_NAME, O_RDONLY);
+    
     char buf = 0;
     struct info F;
-
+    int std_out = STDOUT_FILENO;
+    int in = open(FIFO_NAME, O_RDONLY|O_NONBLOCK);
+    if (strlen(config_info.output_path) != 0) {
+        std_out = open(config_info.output_path, O_WRONLY|O_APPEND|O_CREAT);
+        if (std_out < 0) {
+        fprintf(stderr, "Open Type Err:%d -> %s\n", std_out, config_info.output_path);
+        fprintf(stderr, "Open Type Err:%d -> %s\n", std_out, config_info.output_path);
+            exit(-1);
+        }
+    }
     if (in < 0) {
         perror("open fifo error");
+        close(std_out);
         exit(-1);
     }
+    
+    /* usr info */
+    usr_login();
 
     while (1) {
 	buf = 0;
@@ -51,70 +157,29 @@ static void *usr_putc(void* null) {
         }
 	
         info_get(&F);
-        write(STDOUT_FILENO, F.out, F.o_num);
+        write(std_out, F.out, F.o_num);
 	
     }
     exit(-1);
 }
-int main(int argc, char *argv[]) {
-    int res = -1;
-    pthread_t thread_input, thread_output;
-    int type_fd = STDIN_FILENO;
-    char buf[30] = "/dev/input/";
 
-    /* usr info */
-    usr_login();
-    
-    /* open type file */
-    if (argc == 1)
-        type_fd = open("/dev/input/event1", O_RDONLY);
-    else {
-        strcat(buf, argv[1]);
-        type_fd = open(buf, O_RDONLY);
-    }
-    if (type_fd < 0) {
-        fprintf(stderr, "TYPE open error \n");
-        exit(-1);
-    }
-
-    /* fifo access */
-    if (access(FIFO_NAME, F_OK) == -1) {
-        res = mkfifo(FIFO_NAME, 0777);
-        if (res != 0) {
-            fprintf(stderr, "FIFO create error : %d\n", res);
-            exit(-1);
-        }
-    }
-
-    /* thread create */
-    res = pthread_create(&thread_input, NULL, usr_getc, &type_fd);
-    if (res < 0) {
-        fprintf(stderr, "Thread create error\n");
-        exit(-1);
-    }
-    res = pthread_create(&thread_output, NULL, usr_putc, NULL);
-    if (res < 0) {
-        fprintf(stderr, "Thread creat error\n");
-        exit(-1);
-    }
-    while (1) {
-
-    }
-    close(type_fd);
-    exit(0);
-}
-
-
-static void *usr_getc(void *fd) {
+static void *usr_getc(void *null) {
     char buf = 0;
     struct input_event t;
+    int fd = open(config_info.input_path, O_RDONLY|O_NONBLOCK);
     int out = open(FIFO_NAME, O_WRONLY);
+    if (fd < 0) {
+        fprintf(stderr, "Open Type Err:%d -> %s\n", fd, config_info.input_path);
+        fprintf(stderr, "Open Type Err:%d -> %s\n", fd, config_info.input_path);
+        exit(-1);
+    }
     if (out < 0) {
         perror("open fifo error");
+        close(fd);
         exit(-1);
     }
     while (1) {
-        if (read(*(int*)fd, &t, sizeof(t)) == sizeof(t)) {
+        if (read(fd, &t, sizeof(t)) == sizeof(t)) {
 
             if (t.type == 1 && t.value == 1) {
                 switch(t.code) {
