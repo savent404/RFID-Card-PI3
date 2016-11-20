@@ -1,0 +1,2 @@
+DEV_PATH = /dev/input/event1
+OUT_PATH = /home/savent/workspace/inpute_retarget/out
