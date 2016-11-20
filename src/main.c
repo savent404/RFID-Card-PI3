@@ -1,22 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <linux/input.h>
-#include <string.h>
-#include <pthread.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <time.h>
-
-#define FIFO_NAME "/tmp/type_fifo"
-#define BUFFER_SIZE 1024
-struct info {
-    char src[50];
-    int  i_num;
-    char out[200];
-    int  o_num;
-};
+#include <main.h>
 
 void usr_login(void) {
     time_t T;
@@ -24,6 +6,8 @@ void usr_login(void) {
     strcat(buf, asctime(localtime(&T)));
     write(STDOUT_FILENO, buf, strlen(buf));
 }
+
+
 int  info_get(struct info *pt) {
     time_t T;
     sscanf(pt->src, "%s", pt->out);
@@ -43,8 +27,6 @@ int  info_get(struct info *pt) {
     return 0;
 
 }
-
-void *usr_getc(void *fd);
 
 void *usr_putc(void* null) {
     int in = open(FIFO_NAME, O_RDONLY);
