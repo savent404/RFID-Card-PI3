@@ -26,7 +26,7 @@ struct config {
     char output_path[100];
 };
 
-static void usr_login(void);
+static void usr_login(int fd);
 static int  info_get(struct info *);
 static int  usr_config(struct config *, char *path);
 static void *usr_getc(void *);

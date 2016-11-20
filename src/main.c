@@ -57,11 +57,11 @@ int main(int argc, char *argv[]) {
     }
     exit(0);
 }
-static void usr_login(void) {
+static void usr_login(int fd) {
     time_t T;
     char buf[100] = "##System Login:    ";
     strcat(buf, asctime(localtime(&T)));
-    write(STDOUT_FILENO, buf, strlen(buf));
+    write(fd, buf, strlen(buf));
 }
 
 static int  usr_config(struct config *t, char *path) {
@@ -142,7 +142,7 @@ static void *usr_putc(void* null) {
     }
     
     /* usr info */
-    usr_login();
+    usr_login(std_out);
 
     while (1) {
 	buf = 0;
