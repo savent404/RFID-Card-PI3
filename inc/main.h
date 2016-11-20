@@ -20,9 +20,9 @@ struct info {
     int  o_num;
 };
 
-void usr_login(void);
-int  info_get(struct info *);
-void *usr_getc(void *);
-void *usr_putc(void *);
+static void usr_login(void);
+static int  info_get(struct info *);
+static void *usr_getc(void *);
+static void *usr_putc(void *);
 
 #endif

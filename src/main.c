@@ -1,6 +1,6 @@
 #include <main.h>
 
-void usr_login(void) {
+static void usr_login(void) {
     time_t T;
     char buf[100] = "##System Login:    ";
     strcat(buf, asctime(localtime(&T)));
@@ -8,7 +8,7 @@ void usr_login(void) {
 }
 
 
-int  info_get(struct info *pt) {
+static int  info_get(struct info *pt) {
     time_t T;
     sscanf(pt->src, "%s", pt->out);
     if (strlen(pt->out) != 4) {
@@ -28,7 +28,7 @@ int  info_get(struct info *pt) {
 
 }
 
-void *usr_putc(void* null) {
+static void *usr_putc(void* null) {
     int in = open(FIFO_NAME, O_RDONLY);
     char buf = 0;
     struct info F;
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
 }
 
 
-void *usr_getc(void *fd) {
+static void *usr_getc(void *fd) {
     char buf = 0;
     struct input_event t;
     int out = open(FIFO_NAME, O_WRONLY);
