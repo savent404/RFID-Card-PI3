@@ -1,9 +1,9 @@
 #!/bin/bash
 
-OUTPUT_PIN=4
-GPIO_OUT=gpio4
-INPUT_PIN=5
-GPIO_IN=gpio5
+OUTPUT_PIN=27
+GPIO_OUT=gpio27
+INPUT_PIN=22
+GPIO_IN=gpio22
 function start {
 	echo $OUTPUT_PIN > /sys/class/gpio/export
 	echo $INPUT_PIN  > /sys/class/gpio/export
@@ -30,16 +30,16 @@ function read {
 }
 
 function open {
-	outt1
+	out1
 	sleep 1
 	out0
-	ANS='/sys/class/gpio/gpio5/value'
-	if [ $ANS ]
-	then
-	echo "Open OK!"
+}
+function check {
+	ans=$(cat /sys/class/gpio/$GPIO_IN/value)
+	if [ $ans = 0 ];then
+	echo Open OK!
 	else
-	echo "Open bad!"
+	echo Not Open!
 	fi
-	date
 }
 $1
