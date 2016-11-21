@@ -5,6 +5,17 @@ int main(int argc, char *argv[]) {
     int res = -1;
     pthread_t thread_input, thread_output;
     
+    int fd = open("./testout", O_WRONLY|O_CREAT|O_APPEND);
+    if (fd < 0) {
+        perror("Open file Error");
+        return -1;
+    }
+    int new_fd = dup2(fd, STDOUT_FILENO);
+    printf("printf line\n");
+    system("echo echo line");
+    close(fd);
+    close(new_fd);
+    return 0;
     
     if (argc != 1) {
         for (int i = 1; i < argc; i++) {
