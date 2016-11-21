@@ -1,6 +1,6 @@
 #include <main.h>
 
-static struct config config_info = {.input_path = DEFAULT_INPUT_PATH,.output_path = ""};
+static struct config config_info = {.input_path ="",.output_path = "", .shell_path = ""};
 int main(int argc, char *argv[]) {
     int res = -1;
     pthread_t thread_input, thread_output;
@@ -82,6 +82,11 @@ static int  usr_config(struct config *t, char *path) {
     char line_buf[100];
     char name[100], para[100];
     cnt = read(fd, buf, 200);
+
+    t->input_path[0] = 0;
+    t->output_path[0] = 0;
+    t->shell_path[0] = 0;
+
     while (cnt) {
         while (cnt > 0&& pt[line_cnt] != '\n') {
             line_cnt += 1;
@@ -98,9 +103,18 @@ static int  usr_config(struct config *t, char *path) {
         else if (!strcmp(name, OUTFILE_PATH)) {
             strcpy(t->output_path, para);
         }
+        else if (!strcmp(name, SHELL_PATH)) {
+            strcpy(t->shell_path, para);
+        }
         pt += line_cnt;
         line_cnt = 0;
     }
+    if (strlen(t->input_path) == 0)
+        strcpy(t->input_path, DEFAULT_INPUT_PATH);
+    if (strlen(t->output_path) == 0)
+        strcpy(t->output_path, DEFUALT_OUTPUT_PATH);
+    if (strlen(t->shell_path) == 0)
+        strcpy(t->shell_path, DEFAULT_SHELL_PATH);
     close(fd);
     return 0;
 }
@@ -171,10 +185,13 @@ static void IO_open(int fd_out) {
     char buf[100];
 
     /* call LoginServe.sh */
-    strcpy(buf, "/home/pi/Documents/RFID-Card-PI3/LoginServe.sh open >>");
+    strcpy(buf, config_info.shell_path);
+    strcat(buf, "open >>");
     strcat(buf, config_info.output_path);
     system(buf);
-    strcpy(buf, "/home/pi/Documents/RFID-Card-PI3/LoginServe.sh check >>");
+
+    strcpy(buf, config_info.shell_path);
+    strcat(buf, "check >>");
     strcat(buf, config_info.output_path);
     system(buf);
     /* target reset */

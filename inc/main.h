@@ -12,6 +12,8 @@
 #include <time.h>
 #define DEFAULT_CONFIG_PATH "./config"
 #define DEFAULT_INPUT_PATH "/dev/input/event1"
+#define DEFUALT_OUTPUT_PATH "./out"
+#define DEFAULT_SHELL_PATH "./LoginServe.sh"
 #define FIFO_NAME "/tmp/type_fifo"
 #define BUFFER_SIZE 1024
 struct info {
@@ -24,6 +26,7 @@ struct info {
 struct config {
     char input_path[100];
     char output_path[100];
+    char shell_path[100];
 };
 
 static void usr_login(int fd);
@@ -35,4 +38,5 @@ static void IO_open(int fd_out);
 /* CONFIG CMD */
 #define DEVICE_PATH  "DEV_PATH"
 #define OUTFILE_PATH "OUT_PATH"
+#define SHELL_PATH   "SHL_PATH"
 #endif
