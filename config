@@ -1,3 +1,3 @@
 DEV_PATH = /dev/input/event2
 OUT_PATH = /home/pi/Documents/RFID-Card-PI3/out 
-SHELL_PATH = /home/pi/Documents/RFID-Card-PI3/LoginServe.sh
+SHL_PATH = /home/pi/Documents/RFID-Card-PI3/LoginServe.sh
