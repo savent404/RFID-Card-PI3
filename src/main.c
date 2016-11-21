@@ -144,7 +144,7 @@ static void *usr_putc(void* null) {
     char buf = 0;
     struct info F;
     int std_out = STDOUT_FILENO;
-    int in = open(FIFO_NAME, O_RDONLY|O_NONBLOCK);
+    int in = open(FIFO_NAME, O_RDONLY);
     if (strlen(config_info.output_path) != 0) {
         std_out = open(config_info.output_path, O_WRONLY|O_APPEND|O_CREAT);
         if (std_out < 0) {
@@ -177,6 +177,7 @@ static void *usr_putc(void* null) {
         info_get(&F);
         write(std_out, F.out, F.o_num);
         IO_open(std_out);
+	sleep(1);
     }
     exit(-1);
 }
@@ -200,7 +201,7 @@ static void IO_open(int fd_out) {
 static void *usr_getc(void *null) {
     char buf = 0;
     struct input_event t;
-    int fd = open(config_info.input_path, O_RDONLY|O_NONBLOCK);
+    int fd = open(config_info.input_path, O_RDONLY);
     int out = open(FIFO_NAME, O_WRONLY);
     if (fd < 0) {
         fprintf(stderr, "Open Type Err:%d -> %s\n", fd, config_info.input_path);
@@ -214,7 +215,6 @@ static void *usr_getc(void *null) {
     }
     while (1) {
         if (read(fd, &t, sizeof(t)) == sizeof(t)) {
-
             if (t.type == 1 && t.value == 1) {
                 switch(t.code) {
                     case KEY_0:
