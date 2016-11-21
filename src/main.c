@@ -5,18 +5,6 @@ int main(int argc, char *argv[]) {
     int res = -1;
     pthread_t thread_input, thread_output;
     
-    int fd = open("./testout", O_WRONLY|O_CREAT|O_APPEND);
-    if (fd < 0) {
-        perror("Open file Error");
-        return -1;
-    }
-    int new_fd = dup2(fd, STDOUT_FILENO);
-    printf("printf line\n");
-    system("echo echo line");
-    close(fd);
-    close(new_fd);
-    return 0;
-    
     if (argc != 1) {
         for (int i = 1; i < argc; i++) {
             /* Para: help */
@@ -39,6 +27,9 @@ int main(int argc, char *argv[]) {
             }
         }
     }
+    
+    /* IO init */
+    system("./LoginServe.sh start");
 
     /* fifo access */
     if (access(FIFO_NAME, F_OK) == -1) {
@@ -169,11 +160,22 @@ static void *usr_putc(void* null) {
 	
         info_get(&F);
         write(std_out, F.out, F.o_num);
-	
+        IO_open(std_out);
     }
     exit(-1);
 }
-
+static void IO_open(int fd_out) {
+    /* retarget STDOUT first */
+    int old_fd = STDOUT_FILENO;
+    int new_fd = dup2(fd_out, STDOUT_FILENO);
+    if (new_fd < 0)
+        return;
+    /* call LoginServe.sh */
+    system("./LoginServe.sh open");
+    system("./LoginServe.sh check");
+    /* target reset */
+    dup2(old_fd, STDOUT_FILENO);
+}
 static void *usr_getc(void *null) {
     char buf = 0;
     struct input_event t;
