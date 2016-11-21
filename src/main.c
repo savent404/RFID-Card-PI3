@@ -62,7 +62,9 @@ int main(int argc, char *argv[]) {
 static void usr_login(int fd) {
     time_t T;
     char buf[100] = "##System Login:    ";
-    strcat(buf, asctime(localtime(&T)));
+    char buf_[100];
+    strcpy(buf_, asctime(localtime(&T)));
+    strcat(buf, buf_);
     write(fd, buf, strlen(buf));
 }
 
@@ -165,16 +167,18 @@ static void *usr_putc(void* null) {
     exit(-1);
 }
 static void IO_open(int fd_out) {
-    /* retarget STDOUT first */
-    int old_fd = STDOUT_FILENO;
-    int new_fd = dup2(fd_out, STDOUT_FILENO);
-    if (new_fd < 0)
-        return;
+    
+    char buf[100];
+
     /* call LoginServe.sh */
-    system("./LoginServe.sh open");
-    system("./LoginServe.sh check");
+    strcpy(buf, "/home/pi/Documents/RFID-Card-PI3/LoginServe.sh open >>");
+    strcat(buf, config_info.output_path);
+    system(buf);
+    strcpy(buf, "/home/pi/Documents/RFID-Card-PI3/LoginServe.sh check >>");
+    strcat(buf, config_info.output_path);
+    system(buf);
     /* target reset */
-    dup2(old_fd, STDOUT_FILENO);
+//    dup2(old_fd, STDOUT_FILENO);
 }
 static void *usr_getc(void *null) {
     char buf = 0;
