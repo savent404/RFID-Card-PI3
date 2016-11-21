@@ -186,12 +186,12 @@ static void IO_open(int fd_out) {
 
     /* call LoginServe.sh */
     strcpy(buf, config_info.shell_path);
-    strcat(buf, "open >>");
+    strcat(buf, " open >>");
     strcat(buf, config_info.output_path);
     system(buf);
 
     strcpy(buf, config_info.shell_path);
-    strcat(buf, "check >>");
+    strcat(buf, " check >>");
     strcat(buf, config_info.output_path);
     system(buf);
     /* target reset */
