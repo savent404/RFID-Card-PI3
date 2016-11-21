@@ -4,38 +4,43 @@ OUTPUT_PIN=4
 GPIO_OUT=gpio4
 INPUT_PIN=5
 GPIO_IN=gpio5
-
-start () {
+function start {
 	echo $OUTPUT_PIN > /sys/class/gpio/export
 	echo $INPUT_PIN  > /sys/class/gpio/export
-	echo out        > /sys/class/gpio/$GPIO_OUT/direction
-	echo 1          > /sys/class/gpio/$GPIO_OUT/value
-	return 0
+	echo out         > /sys/class/gpio/$GPIO_OUT/direction
+	echo 1           > /sys/class/gpio/$GPIO_OUT/value
+	echo "Serve start ok."
 }
 
-stop () {
+function stop {
 	echo $OUTPUT_PIN > /sys/class/gpio/unexport
 	echo $INPUT_PIN  > /sys/class/gpio/unexport
-	return 0
+	echo "Serve stopped"
 }
 
-out1 () {
-	echo 1          > /sys/class/gpio/$GPIO_OUT/value
-	return 0
+function out1 {
+	echo 1           > /sys/class/gpio/$GPIO_OUT/value
 }
 
-out0 () {
-	echo 0          > /sys/class/gpio/$GPIO_OUT/value
+function out0 {
+	echo 0           > /sys/class/gpio/$GPIO_OUT/value
 }
 
-read () {
-	echo /sys/class/gpio/$GPIO_IN/value
-	return /sys/class/gpio/$GPIO_IN/value
+function read {
+	cat               /sys/class/gpio/$GPIO_IN/value
 }
 
-open () {
+function open {
 	out0
 	sleep 1
 	out1
-	return 0
+	ANS='/sys/class/gpio/gpio5/value'
+	if [ $ANS ]
+	then
+	echo "Open OK!"
+	else
+	echo "Open bad!"
+	fi
+	date
 }
+$1
