@@ -8,7 +8,6 @@ function start {
 	echo $OUTPUT_PIN > /sys/class/gpio/export
 	echo $INPUT_PIN  > /sys/class/gpio/export
 	echo out         > /sys/class/gpio/$GPIO_OUT/direction
-	echo 1           > /sys/class/gpio/$GPIO_OUT/value
 	echo "Serve start ok."
 }
 
@@ -31,9 +30,9 @@ function read {
 }
 
 function open {
-	out0
+	outt1
 	sleep 1
-	out1
+	out0
 	ANS='/sys/class/gpio/gpio5/value'
 	if [ $ANS ]
 	then

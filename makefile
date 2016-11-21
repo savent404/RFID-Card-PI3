@@ -6,3 +6,4 @@ all:
 	gcc -o $(obj) $(FLAG) $(denpend) -lpthread
 clean:
 	rm obj/*
+	rm out

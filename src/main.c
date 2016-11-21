@@ -104,7 +104,7 @@ static int  usr_config(struct config *t, char *path) {
 static int  info_get(struct info *pt) {
     time_t T;
     sscanf(pt->src, "%s", pt->out);
-    if (strlen(pt->out) != 4) {
+    if (strlen(pt->out) != 10) {
         char buf[100];
         strcpy(buf, pt->out);
         strcpy(pt->out, "->Error Parameter: @");
