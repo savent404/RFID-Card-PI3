@@ -89,9 +89,10 @@ static int  usr_config(struct config *t, char *path) {
     char name[100], para[100];
     cnt = read(fd, buf, 200);
 
-    t->input_path[0] = 0;
+    t->input_path[0]  = 0;
     t->output_path[0] = 0;
-    t->shell_path[0] = 0;
+    t->shell_path[0]  = 0;
+    t->deny_path[0]   = 0;
 
     while (cnt) {
         while (cnt > 0&& pt[line_cnt] != '\n') {
@@ -112,15 +113,22 @@ static int  usr_config(struct config *t, char *path) {
         else if (!strcmp(name, SHELL_PATH)) {
             strcpy(t->shell_path, para);
         }
+        else if (!strcmp(name, DENY_PATH)) {
+            strcpy(t->deny_path, para);
+        }
         pt += line_cnt;
         line_cnt = 0;
     }
+
     if (strlen(t->input_path) == 0)
         strcpy(t->input_path, DEFAULT_INPUT_PATH);
     if (strlen(t->output_path) == 0)
         strcpy(t->output_path, DEFUALT_OUTPUT_PATH);
     if (strlen(t->shell_path) == 0)
         strcpy(t->shell_path, DEFAULT_SHELL_PATH);
+    if (strlen(t->deny_path) == 0)
+        strcpy(t->deny_path, DEFAULT_DENY_PATH);
+
     close(fd);
     return 0;
 }
@@ -169,7 +177,7 @@ static void *usr_putc(void* null) {
     usr_login(std_out);
 
     while (1) {
-	buf = 0;
+	    buf = 0;
         F.i_num = 0;
         F.o_num = 0;
         memset(F.src, 0, 50);
@@ -182,10 +190,39 @@ static void *usr_putc(void* null) {
 	
         info_get(&F);
         write(std_out, F.out, F.o_num);
-        IO_open(std_out);
+        //IO_open(std_out);
+        if (Authentication(F.src) >= 0) {
+            write(std_out, "Permission:Usr", sizeof("Permission:Usr"));
+            IO_open(std_out);
+        }
+        else {
+            write(std_out, "Permission:Black usr\n", sizeof("Permission:Black usr\n"));
+        }
 	sleep(1);
     }
     exit(-1);
+}
+
+static int  Authentication(char *pt) {
+    char buf[100];
+    //search from blacklist
+    sscanf(pt, "%s", pt);
+    int black_fd = open(config_info.deny_path, O_RDONLY);
+    if (black_fd >= 0) {
+       while (read(black_fd, buf, 11) >= 10) {
+           sscanf(buf, "%s", buf);
+           /* test info */
+           if (!strcmp(buf, pt)) {
+               close(black_fd);
+               return -1;
+           }
+       }
+    }
+    else {
+        return 0;
+    }
+    close(black_fd);
+    return 0;
 }
 static void IO_open(int fd_out) {
     
