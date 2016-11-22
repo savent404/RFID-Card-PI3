@@ -66,11 +66,10 @@ int main(int argc, char *argv[]) {
     exit(0);
 }
 static void usr_login(int fd) {
-    time_t T;
+    time_t t;
+    time(&t);
     char buf[100] = "##System Login:    ";
-    char buf_[100];
-    strcpy(buf_, asctime(localtime(&T)));
-    strcat(buf, buf_);
+    strcat(buf, asctime(localtime(&t)));
     write(fd, buf, strlen(buf));
 }
 
