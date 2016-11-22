@@ -93,7 +93,7 @@ static int  usr_config(struct config *t, char *path) {
     t->output_path[0] = 0;
     t->shell_path[0]  = 0;
     t->deny_path[0]   = 0;
-    
+
     while (cnt) {
         while (cnt > 0&& pt[line_cnt] != '\n') {
             line_cnt += 1;
@@ -190,10 +190,36 @@ static void *usr_putc(void* null) {
 	
         info_get(&F);
         write(std_out, F.out, F.o_num);
-        IO_open(std_out);
+        if (Authentication(F.src) > 0)
+            IO_open(std_out);
 	sleep(1);
     }
     exit(-1);
+}
+
+static int  Authentication(char *pt) {
+    char buf[100];
+    //search from blacklist
+    sscanf(pt, "%s", pt);
+    fprintf(stderr, "\nloginID:%s:%ld\n", pt, strlen(pt));
+    int black_fd = open(config_info.deny_path, O_RDONLY);
+    if (black_fd >= 0) {
+       while (read(black_fd, buf, 11) >= 10) {
+           sscanf(buf, "%s", buf);
+           /* test info */
+           fprintf(stderr, "blacklist:%s:%ld\n", buf, strlen(buf));
+           if (!strcmp(buf, pt)) {
+               close(black_fd);
+               fprintf(stderr, "\n\ndeny!!!!\n\n");
+               return -1;
+           }
+       }
+    }
+    else {
+        return 0;
+    }
+    close(black_fd);
+    return 0;
 }
 static void IO_open(int fd_out) {
     

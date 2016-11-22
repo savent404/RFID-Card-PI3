@@ -37,6 +37,7 @@ static int  usr_config(struct config *, char *path);
 static void *usr_getc(void *);
 static void *usr_putc(void *);
 static void IO_open(int fd_out);
+static int  Authentication(char *);
 /* CONFIG CMD */
 #define DEVICE_PATH  "DEV_PATH"
 #define OUTFILE_PATH "OUT_PATH"
