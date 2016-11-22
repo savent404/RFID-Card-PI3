@@ -29,7 +29,10 @@ int main(int argc, char *argv[]) {
     }
     
     /* IO init */
-    system("./LoginServe.sh start");
+    char buf[100];
+    strcpy(buf, config_info.shell_path);
+    strcat(buf, " start");
+    system(buf);
 
     /* fifo access */
     if (access(FIFO_NAME, F_OK) == -1) {
