@@ -4,7 +4,8 @@ static struct config config_info = {.input_path ="",.output_path = "", .shell_pa
 int main(int argc, char *argv[]) {
     int res = -1;
     pthread_t thread_input, thread_output;
-    
+    char *str = NULL;
+
     if (argc != 1) {
         for (int i = 1; i < argc; i++) {
             /* Para: help */
@@ -29,7 +30,12 @@ int main(int argc, char *argv[]) {
     }
     
     /* IO init */
-    system("./LoginServe.sh start");
+    str = (char*)malloc(sizeof(char)*100);
+    memset(str, 0, sizeof(char)*100);
+    strcpy(str, config_info.shell_path);
+    strcat(str, " start");
+    system(str);
+    free(str);
 
     /* fifo access */
     if (access(FIFO_NAME, F_OK) == -1) {
