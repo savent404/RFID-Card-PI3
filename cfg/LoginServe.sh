@@ -37,10 +37,10 @@ function open {
 function check {
 	ans=$(cat /sys/class/gpio/$GPIO_IN/value)
 	if [ $ans = 0 ];then
-	echo "                [Open OK!]"
+	echo "[Open OK!]"
 	return 1
 	else
-	echo "                [Not Open!]"
+	echo "[Not Open!]"
 	return 0
 	fi
 }

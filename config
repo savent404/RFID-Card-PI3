@@ -1,4 +1,0 @@
-DEV_PATH = /dev/input/event1
-OUT_PATH = ./out 
-SHL_PATH = ./LoginServe.sh
-DNY_PATH = ./blacklist
