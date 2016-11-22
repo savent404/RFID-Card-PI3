@@ -16,6 +16,9 @@
 #define DEFAULT_SHELL_PATH "./LoginServe.sh"
 #define DEFAULT_DENY_PATH  ""
 #define FIFO_NAME "/tmp/type_fifo"
+
+#define STRING_PERMISSION_NORMALUSR "Permission:Usr"
+#define STRING_PERMISSION_BLACKUSR  "Permission:BlackUsr\n"
 #define BUFFER_SIZE 1024
 struct info {
     int  i_num;

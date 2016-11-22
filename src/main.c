@@ -135,21 +135,24 @@ static int  usr_config(struct config *t, char *path) {
 
 static int  info_get(struct info *pt) {
     time_t T;
+    int res = 0;
     sscanf(pt->src, "%s", pt->out);
     if (strlen(pt->out) != 10) {
         char buf[100];
         strcpy(buf, pt->out);
         strcpy(pt->out, "->Error Parameter: @");
         strcat(pt->out, buf);
+        res = -1;
     }
     else {
         strcat(pt->out, "\tLogin at");
+        res = 1;
     }
     time(&T);
     strcat(pt->out, "\t");
     strcat(pt->out, asctime(localtime(&T)));
     pt->o_num = strlen(pt->out);
-    return 0;
+    return res;
 
 }
 
@@ -188,15 +191,20 @@ static void *usr_putc(void* null) {
                 F.src[F.i_num++] = buf;
         }
 	
-        info_get(&F);
-        write(std_out, F.out, F.o_num);
-        //IO_open(std_out);
-        if (Authentication(F.src) >= 0) {
-            write(std_out, "Permission:Usr", sizeof("Permission:Usr"));
-            IO_open(std_out);
+        /* if ID is iligeal, it will not check in Authentication
+           and IO_open func */
+        if (info_get(&F) < 0) {
+            write(std_out, F.out, F.o_num);
+            continue;
         }
         else {
-            write(std_out, "Permission:Black usr\n", sizeof("Permission:Black usr\n"));
+            if (Authentication(F.src) >= 0) {
+                write(std_out, STRING_PERMISSION_NORMALUSR, sizeof(STRING_PERMISSION_NORMALUSR));
+                IO_open(std_out);
+            }
+            else {
+                write(std_out, STRING_PERMISSION_BLACKUSR, sizeof(STRING_PERMISSION_BLACKUSR));
+            }
         }
 	sleep(1);
     }
