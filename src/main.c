@@ -89,10 +89,11 @@ static int  usr_config(struct config *t, char *path) {
     char name[100], para[100];
     cnt = read(fd, buf, 200);
 
-    t->input_path[0] = 0;
+    t->input_path[0]  = 0;
     t->output_path[0] = 0;
-    t->shell_path[0] = 0;
-
+    t->shell_path[0]  = 0;
+    t->deny_path[0]   = 0;
+    
     while (cnt) {
         while (cnt > 0&& pt[line_cnt] != '\n') {
             line_cnt += 1;
@@ -112,15 +113,22 @@ static int  usr_config(struct config *t, char *path) {
         else if (!strcmp(name, SHELL_PATH)) {
             strcpy(t->shell_path, para);
         }
+        else if (!strcmp(name, DENY_PATH)) {
+            strcpy(t->deny_path, para);
+        }
         pt += line_cnt;
         line_cnt = 0;
     }
+
     if (strlen(t->input_path) == 0)
         strcpy(t->input_path, DEFAULT_INPUT_PATH);
     if (strlen(t->output_path) == 0)
         strcpy(t->output_path, DEFUALT_OUTPUT_PATH);
     if (strlen(t->shell_path) == 0)
         strcpy(t->shell_path, DEFAULT_SHELL_PATH);
+    if (strlen(t->deny_path) == 0)
+        strcpy(t->deny_path, DEFAULT_DENY_PATH);
+
     close(fd);
     return 0;
 }

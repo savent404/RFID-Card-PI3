@@ -14,6 +14,7 @@
 #define DEFAULT_INPUT_PATH "/dev/input/event1"
 #define DEFUALT_OUTPUT_PATH "./out"
 #define DEFAULT_SHELL_PATH "./LoginServe.sh"
+#define DEFAULT_DENY_PATH  ""
 #define FIFO_NAME "/tmp/type_fifo"
 #define BUFFER_SIZE 1024
 struct info {
@@ -27,6 +28,7 @@ struct config {
     char input_path[100];
     char output_path[100];
     char shell_path[100];
+    char deny_path[100];
 };
 
 static void usr_login(int fd);
@@ -39,4 +41,5 @@ static void IO_open(int fd_out);
 #define DEVICE_PATH  "DEV_PATH"
 #define OUTFILE_PATH "OUT_PATH"
 #define SHELL_PATH   "SHL_PATH"
+#define DENY_PATH    "DNY_PATH"
 #endif
