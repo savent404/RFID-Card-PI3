@@ -201,7 +201,7 @@ static void *usr_putc(void* null) {
         }
         else {
             write(std_out, F.out, F.o_num);
-            if (Authentication(F.src) >= 0) {
+            if (usr_permision_hook(F.src) >= 0) {
                 write(std_out, STRING_PERMISSION_NORMALUSR, sizeof(STRING_PERMISSION_NORMALUSR));
                 IO_open(std_out);
             }

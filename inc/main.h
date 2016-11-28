@@ -108,7 +108,7 @@ static void IO_open(int fd_out);
   * Brief  Check ID's Permission
   * Para @ID 10-length number as string
   * Retval ID's grade, if  return val < 0, DOOR OPEN deny
-           if return >= 0, Sys will open the dorr
+           if return >= 0, Sys will open the door
   */
 static int  Authentication(char *ID);
 /* CONFIG CMD */
