@@ -1,23 +1,25 @@
 #include <main.h>
+#include "hook.h"
 
 static struct config config_info = {.input_path ="",.output_path = "", .shell_path = ""};
 int main(int argc, char *argv[]) {
     int res = -1;
     pthread_t thread_input, thread_output;
     char *str = NULL;
-
+    usr_config_hook(argc, argv);
+    /*
     if (argc != 1) {
         for (int i = 1; i < argc; i++) {
-            /* Para: help */
+            // Para: help
             if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
                 fprintf(stdout, "There is no help, help yourself\n");
                 return 0;
             }
-            /* Para: -config */
+            // Para: -config 
             if (!strcmp(argv[i], "-config")) {
                 i += 1;
                 if (argc <= i) {
-                    /* use default path:"./config" */
+                    // use default path:"./config" 
                     if (usr_config(&config_info, DEFAULT_CONFIG_PATH))
                         return -1;
                 }
@@ -28,6 +30,7 @@ int main(int argc, char *argv[]) {
             }
         }
     }
+    */
     
     /* IO init */
     str = (char*)malloc(sizeof(char)*100);
