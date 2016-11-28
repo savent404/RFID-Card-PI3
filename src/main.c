@@ -108,28 +108,32 @@ static void *usr_putc(void* null) {
         memset(F.src, 0, 50);
         memset(F.out, 0, 200);
 
+        // a complete ID is end of '\n'
         while (buf != '\n') {
             if (read(in, &buf, 1) == 1)
                 F.src[F.i_num++] = buf;
         }
 	
-        /* if ID is iligeal, it will not check in Authentication
+        /* if ID is iligeal, it will not check in usr_permision_hook
            and IO_open func */
         if (info_get(&F) < 0) {
             write(std_out, F.out, F.o_num);
             continue;
         }
+
+        // then ID is right, but can't tell it's a right usr whit "OPEN DOOR" permision
         else {
             write(std_out, F.out, F.o_num);
             if (usr_permision_hook(F.src) >= 0) {
+                // output information tell it's a right usr
                 write(std_out, STRING_PERMISSION_NORMALUSR, sizeof(STRING_PERMISSION_NORMALUSR));
                 usr_IO_open_hook(std_out);
             }
             else {
+                // output information tell it's a bad usr
                 write(std_out, STRING_PERMISSION_BLACKUSR, sizeof(STRING_PERMISSION_BLACKUSR));
             }
         }
-	sleep(1);
     }
     exit(-1);
 }
