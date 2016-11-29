@@ -6,9 +6,17 @@ int main(int argc, char *argv[]) {
     int res = -1;
     pthread_t thread_input, thread_output;
     char *str = NULL;
+
+    /* Get file path : USB device(eventx):input_path
+                       Information file  :output_path
+                       IO shell file     :shell_path
+       Usr can add setup code there
+     */
     usr_config_hook(argc, argv);
     
-    /* IO init */
+    /* Call IO shell init door
+       system("path/LoginServe.sh start")
+     */
     str = (char*)malloc(sizeof(char)*100);
     memset(str, 0, sizeof(char)*100);
     strcpy(str, config_info.shell_path);
@@ -16,7 +24,8 @@ int main(int argc, char *argv[]) {
     system(str);
     free(str);
 
-    /* fifo access */
+    /* Create a FIFO file buffer input type
+     */
     if (access(FIFO_NAME, F_OK) == -1) {
         res = mkfifo(FIFO_NAME, 0720);
         if (res != 0) {
@@ -27,7 +36,10 @@ int main(int argc, char *argv[]) {
     }
 
     
-    //thread create 
+    /* Create two thread
+       @usr_get: get event from USB device
+       @usr_put: judg permision and open door, output information
+     */
     res = pthread_create(&thread_input, NULL, usr_getc, NULL);
     if (res < 0) {
         fprintf(stderr, "Thread create error\n");
@@ -82,8 +94,14 @@ static void *usr_putc(void* null) {
     
     char buf = 0;
     struct info F;
+
+    /* retarget stdout
+       then it can ouput to a file
+     */
     int std_out = STDOUT_FILENO;
+
     int in = open(FIFO_NAME, O_RDONLY);
+
     if (strlen(config_info.output_path) != 0) {
         std_out = open(config_info.output_path, O_WRONLY|O_APPEND|O_CREAT);
         if (std_out < 0) {
@@ -98,7 +116,10 @@ static void *usr_putc(void* null) {
         exit(-1);
     }
     
-    /* usr info */
+    /* This func only call once
+       output system login info.
+       Or you can put info upto internet tell someone ready to go
+     */
     usr_login_hook(std_out);
 
     while (1) {
@@ -108,20 +129,22 @@ static void *usr_putc(void* null) {
         memset(F.src, 0, 50);
         memset(F.out, 0, 200);
 
-        // a complete ID is end of '\n'
+        // a complete ID's deadline is '\n'
         while (buf != '\n') {
             if (read(in, &buf, 1) == 1)
                 F.src[F.i_num++] = buf;
         }
 	
         /* if ID is iligeal, it will not check in usr_permision_hook
-           and IO_open func */
+           and IO_open func 
+           System can do this whitout help from usr
+         */
         if (info_get(&F) < 0) {
             write(std_out, F.out, F.o_num);
             continue;
         }
 
-        // then ID is right, but can't tell it's a right usr whit "OPEN DOOR" permision
+        // Then ID is right, but can't tell it's a right usr whit "OPEN DOOR" permision
         else {
             write(std_out, F.out, F.o_num);
             if (usr_permision_hook(F.src) >= 0) {

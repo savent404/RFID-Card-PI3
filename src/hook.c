@@ -8,7 +8,7 @@ static void usr_login_hook(int fd_out) {
     //example
     usr_login(fd_out);
 
-    //usr define
+    //usr login
 }
 static void usr_config_hook(int argc, char* argv[]) {
     //example
@@ -35,23 +35,20 @@ static void usr_config_hook(int argc, char* argv[]) {
         }
     }
 
-    //usr define
-}
-static void usr_login_hook(int fd_out) {
-    usr_login(fd_out)
+    //usr config
 }
 static int  usr_permision_hook(char *pt) {
     //example func
     return Authentication(pt);
 
-    //usr define
+    //usr permision check
 
 }
 static void usr_IO_open_hook(int fd_out) {
     //example func
     IO_open(fd_out);
 
-    //usr define
+    //usr Open
 }
 
 
