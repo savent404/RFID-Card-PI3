@@ -21,11 +21,6 @@ extern void usr_login_hook(int fd_out);
   */
 extern void usr_config_hook(int argc, char* argv[]);
 /**
-  * Brief  when system reset, system can output somthing information
-  * Para @fd_out output file char
-  */
-extern void usr_login_hook(int fd_out);
-/**
   * Brief  Check ID's Permission
   * Para @ID 10-length number as string
   * Retval ID's grade, if  return val < 0, DOOR OPEN deny
