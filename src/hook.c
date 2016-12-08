@@ -4,32 +4,29 @@
 
 /** There are Usr hook 
   */
-static void usr_login_hook(int fd_out) {
+extern void usr_login_hook(int fd_out) {
     //example
     usr_login(fd_out);
 
     //usr login
 }
-static void usr_config_hook(int argc, char* argv[]) {
+extern void usr_config_hook(int argc, char* argv[]) {
     //example
     if (argc != 1) {
         for (int i = 1; i < argc; i++) {
             // Para: help
             if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
                 fprintf(stdout, "There is no help, help yourself\n");
-                return 0;
             }
             // Para: -config 
             if (!strcmp(argv[i], "-config")) {
                 i += 1;
                 if (argc <= i) {
                     // use default path:"./config" 
-                    if (usr_config(&config_info, DEFAULT_CONFIG_PATH))
-                        return -1;
+                    usr_config(&config_info, DEFAULT_CONFIG_PATH);
                 }
                 else {
-                    if (usr_config(&config_info, argv[i]))
-                        return -1;
+                    usr_config(&config_info, argv[i]);
                 }
             }
         }
@@ -37,14 +34,14 @@ static void usr_config_hook(int argc, char* argv[]) {
 
     //usr config
 }
-static int  usr_permision_hook(char *pt) {
+extern int  usr_permision_hook(char *pt) {
     //example func
     return Authentication(pt);
 
     //usr permision check
 
 }
-static void usr_IO_open_hook(int fd_out) {
+extern void usr_IO_open_hook(int fd_out) {
     //example func
     IO_open(fd_out);
 

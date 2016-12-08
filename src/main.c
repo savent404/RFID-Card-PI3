@@ -1,4 +1,4 @@
-#include <main.h>
+#include "main.h"
 #include "hook.h"
 
 struct config config_info = {.input_path ="",.output_path = "", .shell_path = ""};

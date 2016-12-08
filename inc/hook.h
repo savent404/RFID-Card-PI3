@@ -1,6 +1,8 @@
 #ifndef _HOOK_H_
 #define _HOOK_H_
 
+#include "typedef.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -11,25 +13,25 @@ extern "C" {
   * Brief  When System Reset,This func will output_path
            Startup time information to output_path file
   */
-static void usr_login_hook(int fd_out);
+extern void usr_login_hook(int fd_out);
 /**
   * Brief  get config information from a local config file
   * Para @cpt  see "struct config"
   * Para @path file path
   */
-static void usr_config_hook(int argc, char* argv[]);
+extern void usr_config_hook(int argc, char* argv[]);
 /**
   * Brief  when system reset, system can output somthing information
   * Para @fd_out output file char
   */
-static void usr_login_hook(int fd_out);
+extern void usr_login_hook(int fd_out);
 /**
   * Brief  Check ID's Permission
   * Para @ID 10-length number as string
   * Retval ID's grade, if  return val < 0, DOOR OPEN deny
            if return >= 0, Sys will open the door
   */
-static int  usr_permision_hook(char *pt);
+extern int  usr_permision_hook(char *pt);
 /**
   * Brief  the oprate of IO 
            "open door" and "check door status"
@@ -37,7 +39,7 @@ static int  usr_permision_hook(char *pt);
                  The door status can tell you IF THE
                  DOOR OPEN ? or it can be not opened.
   */
-static void usr_IO_open_hook(int fd_out);
+extern void usr_IO_open_hook(int fd_out);
 
 /** There are Example func guide to design
   */
