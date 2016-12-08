@@ -30,20 +30,20 @@ auto startup as Deamon
     }
 在hook.c文件中用户可根据Example函数的具体实现方法对功能进行补充和更改
 
-* usr_login_hook(int fd_out);
+* `usr_login_hook`(int fd_out);
 
  当程序以守护函数形式运行初，可向文档输出登陆时间以及用户自定义的信息
-arg fd_out 文档的文件符号
+arg `fd_out` 文档的文件符号
 
-* usr_config_hook(int argc, char* argv[]);
+* `usr_config_hook`(int argc, char* argv[]);
 
- 例程usr_config中根据变量'-config ConfigFilePath'配置信息到（struct config) config_info
-用户可在struct config 结构体中添加更多的配置信息并在usr_config_hook中实现
+ 例程`usr_config`中根据变量`'-config ConfigFilePath'`配置信息到（struct config) `config_info`
+用户可在`struct config 结构体`中添加更多的配置信息并在`usr_config_hook`中实现
 
-* usr_permision_hook(char* pt);
+* `usr_permision_hook`(char* pt);
 
  检查用户ID的登陆权限,例程中是查询黑名单文件，若不在黑名单中则认为可以开门
 
-* usr_IO_open_hook(int fd_out);
+* `usr_IO_open_hook`(int fd_out);
 
- 调用GPIO内核实现开门，输出信息到文件：fd_out
+ 调用GPIO内核实现开门，输出信息到文件：`fd_out`
