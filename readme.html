@@ -5,15 +5,18 @@
 <body marginheight="0"><h1>USB RFID reader</h1>
 <h2>how to use</h2>
 <pre><code>mkdir obj
-makefile
+make
 sudo /home/pi/Documents/RFID-Card-PI3/obj/Login_System -config /home/pi/Documents/RFID-Card-PI3/cfg/config</code></pre>
+<p>Then you can read /home/pi/Documents/out search the Login ID
+
+</p>
 <h2>another para</h2>
 <ul>
 <li>Balcklist</li>
 <li>Output info to /home/pi/Documents/out</li>
-<li>Show in cfg/config<h2>useful func</h2>
-</li>
+<li>Show in cfg/config</li>
 </ul>
+<h2>useful func</h2>
 <p>search USB device
 
 </p>
@@ -21,9 +24,11 @@ sudo /home/pi/Documents/RFID-Card-PI3/obj/Login_System -config /home/pi/Document
 <p>auto startup as Deamon
 
 </p>
-<pre><code>add "sudo /home/pi/Documents/RFID-Card-PI3/obj/Login_System -config /home/pi/Documents/RFID-Card-PI3/cfg/config" to /etc/rc.loacl</code></pre>
+<p>add "<code>sudo /home/pi/Documents/RFID-Card-PI3/obj/Login_System -config /home/pi/Documents/RFID-Card-PI3/cfg/config &amp;</code>" to /etc/rc.loacl
+
+</p>
 <h2>Hook函数说明</h2>
-<p> 为实现功能的快速补充 主要操作以hook形式的例程给出
+<p>为实现功能的快速补充 主要操作以hook形式的例程给出
 
 </p>
 <pre><code>type hook(arg) {
@@ -33,23 +38,31 @@ sudo /home/pi/Documents/RFID-Card-PI3/obj/Login_System -config /home/pi/Document
     //usr define hook
     return (extern) usr_hook(arg);
 }</code></pre>
-<p>在hook.c文件中用户可根据Example函数的具体实现方法对功能进行补充和更改
+<p>在<strong>hook.c</strong>文件中用户可根据<strong>Example函数</strong>的具体实现方法对功能进行补充和更改
 
 </p>
 <ul>
-<li><p><code>usr_login_hook</code>(int fd_out);</p>
-<p>当程序以守护函数形式运行初，可向文档输出登陆时间以及用户自定义的信息
-arg <code>fd_out</code> 文档的文件符号</p>
+<li><p><code>usr_login_hook(int fd_out);</code></p>
+<p>  当程序以守护函数形式运行初，可向文档输出登陆时间以及用户自定义的信息
+  <strong>[arg] fd_out</strong>文档的文件符号</p>
 </li>
-<li><p><code>usr_config_hook</code>(int argc, char* argv[]);</p>
-<p>例程<code>usr_config</code>中根据变量<code>'-config ConfigFilePath'</code>配置信息到（struct config) <code>config_info</code>
-用户可在<code>struct config 结构体</code>中添加更多的配置信息并在<code>usr_config_hook</code>中实现</p>
+<li><p><code>usr_config_hook(int argc, char* argv[]);</code></p>
+<p>  例程<code>usr_config</code>中根据变量
+  <strong>-config ConfigFilePath</strong>配置输出信息到
+  <strong>[struct config]config_info</strong></p>
+<p>  用户可在
+  <strong>[struct config] 结构体</strong>中添加更多的配置信息并在
+  <code>usr_config_hook</code>中实现</p>
 </li>
-<li><p><code>usr_permision_hook</code>(char* pt);</p>
-<p>检查用户ID的登陆权限,例程中是查询黑名单文件，若不在黑名单中则认为可以开门</p>
+<li><p><code>usr_permision_hook(char* pt);</code></p>
+<p>   检查用户ID的登陆权限,例程中是查询
+  <strong>黑名单(Blacklist)</strong>文件，若不在黑名单中则认为可以开门</p>
 </li>
-<li><p><code>usr_IO_open_hook</code>(int fd_out);</p>
-<p>调用GPIO内核实现开门，输出信息到文件：<code>fd_out</code></p>
+<li><p><code>usr_IO_open_hook(int fd_out);</code></p>
+<p>   调用
+  <strong>GPIO内核</strong>实现开门，输出信息到文件：<code>fd_out</code></p>
 </li>
 </ul>
+<h3>view project on <a href="https://github.com/savent404/RFID-Card-PI3">github</a></h3>
+<p>Edit By <a href="http://mahua.jser.me">MaHua</a></p>
 </body></html>
