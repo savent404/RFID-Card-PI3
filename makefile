@@ -1,5 +1,5 @@
 obj := obj/Login_System
-denpend := src/main.c
+denpend := src/main.c src/hook.c
 FLAG := -Iinc -g -std=c99
 
 all:
