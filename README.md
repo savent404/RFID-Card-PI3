@@ -44,6 +44,6 @@ arg fd_out 文档的文件符号
 
  检查用户ID的登陆权限,例程中是查询黑名单文件，若不在黑名单中则认为可以开门
 
- * usr_IO_open_hook(int fd_out);
+* usr_IO_open_hook(int fd_out);
 
  调用GPIO内核实现开门，输出信息到文件：fd_out
