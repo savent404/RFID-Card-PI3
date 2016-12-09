@@ -58,5 +58,8 @@ add "`sudo /home/pi/Documents/RFID-Card-PI3/obj/Login_System -config /home/pi/Do
  	调用
 	**GPIO内核**实现开门，输出信息到文件：`fd_out`
 
+# Release V1.1
+Control **[RFID-remote](https://github.com/savent404/RFID-remote)** as a master
 
-### view project on [github](https://github.com/savent404/RFID-Card-PI3)
+# Any Question
+view project on [github](https://github.com/savent404/RFID-Card-PI3)
