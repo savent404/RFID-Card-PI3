@@ -152,6 +152,11 @@ static void IO_open(int fd_out) {
     strcat(buf, " check >>");
     strcat(buf, config_info.output_path);
     system(buf);
+
+    /* send sig to extra FIFO */
+    int _fd = open(FIFO_NAME, O_WRONLY);
+    write(_fd, "A", 1);
+    close(_fd);
     /* target reset */
 //    dup2(old_fd, STDOUT_FILENO);
 }

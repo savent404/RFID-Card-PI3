@@ -35,6 +35,16 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    /* Create extra FIFO file
+    */
+    if (access(EXTRA_FIFO_NAME, F_OK) == -1) {
+        res = mkfifo(EXTRA_FIFO_NAME, 0720);
+        if (res != 0) {
+            fprintf(stderr, "extra FIFO create error : %d\n", res);
+            exit(-1);
+        }
+    }
+
     
     /* Create two thread
        @usr_get: get event from USB device

@@ -13,7 +13,7 @@
 
 #include "typedef.h"
 #define FIFO_NAME "/tmp/type_fifo"
-
+#define EXTRA_FIFO_NAME "/tmp/sig_fifo"
 #define STRING_PERMISSION_NORMALUSR "Permission:Usr"
 #define STRING_PERMISSION_BLACKUSR  "Permission:BlackUsr\n"
 #define BUFFER_SIZE 1024
