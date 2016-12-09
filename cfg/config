@@ -1,4 +1,4 @@
-DEV_PATH = /dev/input/event3
+DEV_PATH = /dev/input/event0
 OUT_PATH = /home/pi/Documents/out 
 SHL_PATH = /home/pi/Documents/RFID-Card-PI3/cfg/LoginServe.sh
 DNY_PATH = /home/pi/Documents/RFID-Card-PI3/cfg/blacklist

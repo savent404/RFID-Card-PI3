@@ -154,7 +154,7 @@ static void IO_open(int fd_out) {
     system(buf);
 
     /* send sig to extra FIFO */
-    int _fd = open(FIFO_NAME, O_WRONLY);
+    int _fd = open(EXTRA_FIFO_NAME, O_WRONLY);
     write(_fd, "A", 1);
     close(_fd);
     /* target reset */
